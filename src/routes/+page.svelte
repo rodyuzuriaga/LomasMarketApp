@@ -5,9 +5,15 @@
 <div>
 	<h2>Usuario Logueado</h2>
 	<div>
-	  <p>ID: {data.user.id}</p>
-	  <p>Usuario: {data.user.usuario}</p>
-	  <p>Rol ID: {data.user.rol_id}</p>
+	  {#if 'id' in data.user}
+		<p>ID: {data.user.id}</p>
+	  {/if}
+	  {#if 'usuario' in data.user}
+		<p>Usuario: {data.user.usuario}</p>
+	  {/if}
+	  {#if 'rol_id' in data.user}
+		<p>Rol ID: {data.user.rol_id}</p>
+	  {/if}
 	</div>
 </div>
 
