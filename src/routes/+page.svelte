@@ -2,6 +2,7 @@
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcomeFallback from '$lib/images/svelte-welcome.png';
+    export let data;
 </script>
 
 <svelte:head>
@@ -27,6 +28,12 @@
 
 	<Counter />
 </section>
+
+<div>
+  {#each data.cart as { id, quantity } (id)}
+    <div>{id} - {quantity}</div>
+  {/each}
+</div>
 
 <style>
 	section {
