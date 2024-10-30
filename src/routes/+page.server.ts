@@ -15,9 +15,24 @@ export async function _createUser() {
   return newUser;
 }
 
+export async function _checkConnection() {
+    try {
+      // Realiza una consulta simple para verificar la conexión
+      const result = await prisma.$queryRaw`SELECT 1`;
+      console.log('Conexión exitosa:', result);
+      return true;
+    } catch (error) {
+      console.error('Error al conectar a la base de datos:', error);
+      return false;
+    }
+  }
+
 export async function load() {
-  const user = await _createUser();
-  return {
-    user
-  };
-}
+    const user = await _createUser();
+    console.log('Loaded user:', user);
+    const isConnected = await _checkConnection();
+    return {
+      user,
+      isConnected
+    };
+  }
