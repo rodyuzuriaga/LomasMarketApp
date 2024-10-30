@@ -1,0 +1,103 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Venta {
+  id          BigInt @id @default(autoincrement())
+  fecha       DateTime @default(now())
+  cliente_id  BigInt
+  producto_id BigInt
+  cantidad    Int
+  metodo_pago String
+  total       Decimal
+
+  cliente Cliente @relation(fields: [cliente_id], references: [id])
+  producto Producto @relation(fields: [producto_id], references: [id])
+  pago Pago[]
+}
+
+model Cliente {
+  id             BigInt @id @default(autoincrement())
+  nombre         String
+  direccion      String?
+  numero_contacto String?
+  ventas         Venta[]
+}
+
+model Producto {
+  id       BigInt @id @default(autoincrement())
+  nombre   String
+  categoria String?
+  precio   Decimal
+  stock    Int
+  ventas   Venta[]
+  ordenes OrdenCompra[]
+}
+
+model Pago {
+  id         BigInt @id @default(autoincrement())
+  venta_id   BigInt
+  fecha      DateTime @default(now())
+  metodo_pago String
+  monto      Decimal
+
+  venta Venta @relation(fields: [venta_id], references: [id])
+}
+
+model OrdenCompra {
+  id                    BigInt @id @default(autoincrement())
+  producto_id           BigInt
+  proveedor_id          BigInt
+  cantidad              Int
+  fecha_estimada_entrega DateTime?
+
+  producto Producto @relation(fields: [producto_id], references: [id])
+  proveedor Proveedor @relation(fields: [proveedor_id], references: [id])
+}
+
+model Proveedor {
+  id        BigInt @id @default(autoincrement())
+  nombre    String
+  contacto  String?
+  direccion String?
+  ordenes   OrdenCompra[]
+  facturas FacturaCompra[]
+}
+
+model TransaccionBancaria {
+  id               BigInt @id @default(autoincrement())
+  codigo_transaccion String
+  estado_pago      String
+}
+
+model FacturaCompra {
+  id             BigInt @id @default(autoincrement())
+  numero_factura String
+  proveedor_id   BigInt
+  fecha          DateTime
+  monto_total    Decimal
+
+  proveedor Proveedor @relation(fields: [proveedor_id], references: [id])
+}
+
+model Usuario {
+  id        BigInt @id @default(autoincrement())
+  usuario   String @unique
+  contrasena String
+  rol_id    BigInt
+
+  rol Rol @relation(fields: [rol_id], references: [id])
+}
+
+model Rol {
+  id       BigInt @id @default(autoincrement())
+  nombre   String
+  permisos String[]
+  usuarios Usuario[]
+}
